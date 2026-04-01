@@ -3,7 +3,7 @@ FROM php:8.2-apache
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git curl zip unzip libpng-dev libjpeg-dev libzip-dev libicu-dev libonig-dev \
+    git curl zip unzip libpng-dev libjpeg-dev libzip-dev libicu-dev libonig-dev libpq-dev \
     nodejs npm \
     && rm -rf /var/lib/apt/lists/*
 
