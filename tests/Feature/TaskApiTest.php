@@ -115,4 +115,32 @@ class TaskApiTest extends TestCase
                      ],
                  ]);
     }
+
+    public function test_delete_task_only_completed_tasks(): void
+    {
+        $pendingTask = Task::factory()->create([
+            'user_id' => $this->user->id,
+            'status'  => Task::STATUS_PENDING,
+        ]);
+
+        $response = $this->deleteJson("/api/tasks/{$pendingTask->id}", [], $this->headers);
+
+        $response->assertStatus(403)
+                 ->assertJson([ 'success' => false, 'message' => 'Only completed tasks can be deleted' ]);
+
+        $this->assertDatabaseHas('tasks', ['id' => $pendingTask->id, 'deleted_at' => null]);
+
+        $completedTask = Task::factory()->create([
+            'user_id'      => $this->user->id,
+            'status'       => Task::STATUS_COMPLETED,
+            'completed_at' => now(),
+        ]);
+
+        $response = $this->deleteJson("/api/tasks/{$completedTask->id}", [], $this->headers);
+
+        $response->assertOk()
+                 ->assertJson([ 'success' => true ]);
+
+        $this->assertSoftDeleted('tasks', ['id' => $completedTask->id]);
+    }
 }

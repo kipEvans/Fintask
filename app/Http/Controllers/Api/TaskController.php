@@ -206,6 +206,13 @@ class TaskController extends Controller
             ], 404);
         }
 
+        if ($task->status !== Task::STATUS_COMPLETED) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only completed tasks can be deleted',
+            ], 403);
+        }
+
         $task->delete();
 
         return response()->json([
