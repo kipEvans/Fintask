@@ -1,5 +1,5 @@
 # Use Apache PHP image for Render-friendly deployment
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
