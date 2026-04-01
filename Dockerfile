@@ -46,8 +46,14 @@ RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
 
     <Directory /var/www/html/public>
         Options Indexes FollowSymLinks
-        AllowOverride All
+        AllowOverride None
         Require all granted
+
+        RewriteEngine On
+        RewriteBase /
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^ index.php [L,QSA]
     </Directory>
 
     ErrorLog ${APACHE_LOG_DIR}/error.log
