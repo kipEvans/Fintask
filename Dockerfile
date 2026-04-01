@@ -29,7 +29,9 @@ RUN mkdir -p storage bootstrap/cache
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts
 
 # Build assets if package.json exists
-RUN if [ -f package.json ]; then npm ci && npm run prod; fi
+RUN if [ -f package.json ]; then \
+      if [ -f package-lock.json ]; then npm ci; else npm install; fi && npm run prod; \
+    fi
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
