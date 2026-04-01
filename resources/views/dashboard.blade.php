@@ -526,8 +526,8 @@
                     <div class="stat">
                         <div class="stat-stripe" style="background:linear-gradient(90deg,var(--green),#34d399)"></div>
                         <div class="stat-hd"><div class="stat-ico" style="background:var(--green-bg);color:var(--green)"><i class="fas fa-coins"></i></div></div>
-                        <div class="stat-val">KES @{{ fmt(summary.income) }}</div>
-                        <div class="stat-lbl">Total Budget (Income)</div>
+                        <div class="stat-val">KES @{{ fmt(budgetTarget) }}</div>
+                        <div class="stat-lbl">Monthly Budget Target</div>
                     </div>
                     <div class="stat">
                         <div class="stat-stripe" style="background:linear-gradient(90deg,var(--red),#f87171)"></div>
@@ -540,6 +540,19 @@
                         <div class="stat-hd"><div class="stat-ico" style="background:#fff3ed;color:var(--accent)"><i class="fas fa-shield-halved"></i></div></div>
                         <div class="stat-val">@{{ budgetPct }}%</div>
                         <div class="stat-lbl">Budget Used</div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:16px;">
+                    <div class="card-hd"><h3><i class="fas fa-edit"></i> Update Monthly Budget</h3></div>
+                    <div class="card-body">
+                        <div class="fg">
+                            <label>Monthly Budget (KES)</label>
+                            <input type="number" class="fc" v-model="budgetForm.monthly_budget" min="0" step="0.01" />
+                        </div>
+                        <div class="card-ft" style="padding-top:12px; text-align:right;">
+                            <button class="btn btn-primary" @click="saveBudget()">Save Budget</button>
+                        </div>
                     </div>
                 </div>
 
@@ -559,7 +572,7 @@
                             </div>
                             <div class="prog-foot">
                                 <span>KES 0</span>
-                                <span>KES @{{ fmt(summary.income) }}</span>
+                                <span>KES @{{ fmt(budgetTarget) }}</span>
                             </div>
                         </div>
 

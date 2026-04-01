@@ -93,4 +93,31 @@ class AuthApiTest extends TestCase
              ->assertOk()
              ->assertJsonPath('data.monthly_budget', '60000.00');
     }
+
+    public function test_dashboard_returns_budget_from_profile(): void
+    {
+        $user    = User::factory()->create(['monthly_budget' => 45000, 'currency' => 'KES']);
+        $token   = JWTAuth::fromUser($user);
+        $headers = ['Authorization' => "Bearer {$token}"];
+
+        $response = $this->getJson('/api/dashboard', $headers)
+             ->assertOk();
+
+        $this->assertEquals(45000.0, (float) $response->json('data.finance.current_month.budget'));
+        $this->assertEquals(45000, $response->json('data.user.monthly_budget'));
+    }
+
+    public function test_web_register_redirects_to_login(): void
+    {
+        $response = $this->post('/register', [
+            'name'                  => 'Glow User',
+            'email'                 => 'glow@example.com',
+            'password'              => 'secret123',
+            'password_confirmation' => 'secret123',
+            'monthly_budget'        => 45000,
+        ]);
+
+        $response->assertRedirect(route('login'));
+        $this->assertDatabaseHas('users', ['email' => 'glow@example.com', 'monthly_budget' => 45000]);
+    }
 }

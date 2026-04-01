@@ -77,12 +77,8 @@ class WebController extends Controller
             'currency'       => 'KES',
         ]);
 
-        $token = JWTAuth::fromUser($user);
-
-        $request->session()->put('jwt_token', $token);
-        $request->session()->put('user_name', $user->name);
-
-        return redirect()->route('dashboard');
+        // do not auto-login after registration; require explicit login
+        return redirect()->route('login')->with('success', 'Account created. Please log in.');
     }
 
     public function dashboard()

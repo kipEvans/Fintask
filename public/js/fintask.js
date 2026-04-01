@@ -39,6 +39,10 @@ createApp({
             description: '', date: todayStr()
         });
 
+        // Budget and Dashboard data
+        const budgetTarget = ref(0);
+        const budgetForm   = ref({ monthly_budget: 0 });
+
         // Summary / Report
         const summary = ref({ income: 0, expenses: 0, categories: [] });
         const rDate   = ref(todayStr());
@@ -99,8 +103,8 @@ createApp({
         );
 
         const budgetPct = computed(() => {
-            if (!summary.value.income) return 0;
-            return Math.round((summary.value.expenses / summary.value.income) * 100);
+            if (!budgetTarget.value) return 0;
+            return Math.round((summary.value.expenses / budgetTarget.value) * 100);
         });
 
         const filteredTasks = computed(() => {
@@ -317,6 +321,23 @@ createApp({
             }
         }
 
+        async function fetchDashboard() {
+            try {
+                const res = await api('GET', '/api/dashboard');
+                if (res && res.data) {
+                    const finance = res.data.finance?.current_month;
+                    if (finance) {
+                        budgetTarget.value = Number(finance.budget || 0);
+                        budgetForm.value.monthly_budget = Number(finance.budget || 0);
+                        summary.value.income = Number(finance.income || 0);
+                        summary.value.expenses = Number(finance.expenses || 0);
+                    }
+                }
+            } catch (e) {
+                toast('Failed to load dashboard data', 'err');
+            }
+        }
+
         function openTxnModal(type) {
             txnForm.value = {
                 amount: '', type, category: '',
@@ -337,6 +358,22 @@ createApp({
                 }
             } catch (e) {
                 toast(e.message || 'Failed to save transaction', 'err');
+            }
+        }
+
+        async function saveBudget() {
+            try {
+                const payload = { monthly_budget: Number(budgetForm.value.monthly_budget) };
+                const res = await api('PUT', '/api/auth/profile', payload);
+                if (res && res.success) {
+                    budgetTarget.value = payload.monthly_budget;
+                    toast('Budget updated successfully', 'success');
+                    await fetchDashboard();
+                    await fetchTransactions();
+                    buildReport();
+                }
+            } catch (e) {
+                toast(e.message || 'Failed to update budget', 'err');
             }
         }
 
@@ -397,7 +434,7 @@ createApp({
                 tasksDone:    doneTasks.length,
                 tasksPending: pending.length,
                 todayInc, todayExp,
-                remaining:    summary.value.income - summary.value.expenses,
+                remaining:    budgetTarget.value - summary.value.expenses,
                 doneTasks,
                 todayExpList,
             };
@@ -405,6 +442,7 @@ createApp({
 
         /* ── INIT ──────────────────────────────────────────────── */
         onMounted(async () => {
+            await fetchDashboard();
             await fetchTasks();
             await fetchTransactions();
             buildReport();
@@ -415,13 +453,14 @@ createApp({
             page, sbOpen, loading, toasts, userName,
             tasks, tf, ts, taskModal, editingTask, tForm,
             transactions, txf, txnModal, txnForm,
+            budgetTarget, budgetForm,
             summary, rDate, report,
             palette, navItems, titles, subtitles,
             initials, todayDisplay, pendingCount, doneCount,
             budgetPct, filteredTasks, filteredTxns,
             fmt, fmtDate, catPct, catIcon, go,
             openTaskModal, editTask, saveTask, toggleTask, delTask,
-            openTxnModal, saveTxn, delTxn, buildReport,
+            openTxnModal, saveTxn, delTxn, saveBudget, buildReport,
         };
     }
 }).mount('#app');
