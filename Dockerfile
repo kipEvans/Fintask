@@ -1,52 +1,46 @@
-# Use official PHP image with FPM
-FROM php:8.4-fpm-alpine
+# Use Apache PHP image for Render-friendly deployment
+FROM php:8.2-apache
 
-# Install system dependencies
-RUN apk --update --no-cache add \
-    bash \
-    git \
-    curl \
-    zip \
-    unzip \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    libzip-dev \
-    oniguruma-dev \
-    postgresql-dev \
-    icu-dev \
-    nodejs \
-    npm \
-    npm \
-    shadow \
-    openssh
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git curl zip unzip libpng-dev libjpeg-dev libzip-dev libicu-dev libonig-dev \
+    nodejs npm \
+    && rm -rf /var/lib/apt/lists/*
 
-# PHP extensions
-RUN docker-php-ext-configure zip
+# Enable Apache modules for Laravel
+RUN a2enmod rewrite headers
+
+# Install PHP extensions
 RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip intl
 
-# Composer install
+# Install Composer
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
-# App directory
+# Set workdir
 WORKDIR /var/www/html
 
-# Copy application source
+# Copy source
 COPY . /var/www/html
 
+# Ensure storage and cache directories exist
+RUN mkdir -p storage bootstrap/cache
+
 # Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts
 
-# Install node dependencies and build assets
-RUN npm ci && npm run prod
+# Build assets if package.json exists
+RUN if [ -f package.json ]; then npm ci && npm run prod; fi
 
-# Permissions
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port
-EXPOSE 9000
+# Set Apache document root to public
+RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's!<Directory /var/www/>!<Directory /var/www/html/public>!g' /etc/apache2/apache2.conf || true
 
-# Entrypoint
-env PATH="/var/www/html/vendor/bin:$PATH"
+# Expose HTTP
+EXPOSE 80
 
-CMD ["php-fpm"]
+# Start Apache
+CMD ["apache2-foreground"]
