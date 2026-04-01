@@ -115,4 +115,40 @@ class TransactionApiTest extends TestCase
                      ],
                  ]);
     }
+
+    public function test_can_record_income_transaction(): void
+    {
+        $payload = [
+            'amount'      => 5000,
+            'type'        => 'income',
+            'category'    => 'Salary',
+            'description' => 'Salary payment',
+            'date'        => today()->toDateString(),
+        ];
+
+        $response = $this->postJson('/api/transactions', $payload, $this->headers);
+
+        $response->assertCreated()
+                 ->assertJson(['success' => true, 'data' => ['type' => 'income', 'category' => 'Salary']]);
+
+        $this->assertDatabaseHas('transactions', ['user_id' => $this->user->id, 'amount' => 5000, 'type' => 'income']);
+    }
+
+    public function test_can_record_expense_transaction(): void
+    {
+        $payload = [
+            'amount'      => 2500,
+            'type'        => 'expense',
+            'category'    => 'Food',
+            'description' => 'Lunch',
+            'date'        => today()->toDateString(),
+        ];
+
+        $response = $this->postJson('/api/transactions', $payload, $this->headers);
+
+        $response->assertCreated()
+                 ->assertJson(['success' => true, 'data' => ['type' => 'expense', 'category' => 'Food']]);
+
+        $this->assertDatabaseHas('transactions', ['user_id' => $this->user->id, 'amount' => 2500, 'type' => 'expense']);
+    }
 }
