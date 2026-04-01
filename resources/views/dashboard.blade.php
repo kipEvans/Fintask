@@ -1,7 +1,12 @@
-{{-- ============================================================
-     resources/views/pages/dashboard.blade.php
-     Main SPA shell — Vue takes over from here.
-     ============================================================ --}}
+{{--
+  resources/views/pages/dashboard.blade.php
+  ──────────────────────────────────────────
+  The FinTask SPA shell. Vue 3 handles all client-side routing.
+
+  CSS  →  public/css/fintask.css   (linked via layouts/app.blade.php)
+  JS   →  public/js/fintask.js     (linked via layouts/app.blade.php)
+  JWT  →  read from <meta name="auth-token"> (written by layouts/app.blade.php)
+--}}
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
@@ -9,7 +14,7 @@
 @section('content')
 <div id="app">
 
-    {{-- ── TOAST NOTIFICATIONS ───────────────────────────────── --}}
+    {{-- ── TOAST NOTIFICATIONS ─────────────────────────────── --}}
     <div class="toast-wrap">
         <div v-for="(t, i) in toasts" :key="i" :class="['toast', t.type]">
             <i :class="t.icon"></i> @{{ t.msg }}
@@ -33,9 +38,10 @@
 
             <nav class="nav">
                 <div class="nav-label">Menu</div>
-                <div v-for="n in navItems" :key="n.key"
-                     :class="['nav-item', { active: page === n.key }]"
-                     @click="go(n.key)">
+                <div
+                    v-for="n in navItems" :key="n.key"
+                    :class="['nav-item', { active: page === n.key }]"
+                    @click="go(n.key)">
                     <i :class="n.icon"></i>
                     @{{ n.label }}
                     <span v-if="n.key === 'tasks' && pendingCount > 0" class="nav-badge">
@@ -78,7 +84,6 @@
                         <i class="fas fa-bell"></i>
                         <span v-if="pendingCount > 0" class="notif-dot"></span>
                     </div>
-                    {{-- Logout --}}
                     <form method="POST" action="{{ route('logout') }}" style="margin:0">
                         @csrf
                         <button type="submit" class="icon-btn" title="Logout">
@@ -93,8 +98,9 @@
             ════════════════════════════════════════════ --}}
             <div v-if="page === 'dashboard'" class="page">
 
-                {{-- Stat Cards --}}
+                {{-- Stat row --}}
                 <div class="stats-row">
+
                     <div class="stat">
                         <div class="stat-stripe" style="background:linear-gradient(90deg,#059669,#34d399)"></div>
                         <div class="stat-hd">
@@ -140,10 +146,12 @@
                         <div class="stat-val">@{{ doneCount }} / @{{ tasks.length }}</div>
                         <div class="stat-lbl">Tasks Done</div>
                     </div>
-                </div>
+
+                </div>{{-- /stats-row --}}
 
                 {{-- Recent Tasks + Transactions --}}
                 <div class="two-col">
+
                     <div class="card">
                         <div class="card-hd">
                             <h3><i class="fas fa-check-circle"></i> Recent Tasks</h3>
@@ -156,19 +164,16 @@
                                 <p>Create your first task</p>
                             </div>
                             <div v-else class="task-list">
-                                <div v-for="t in tasks.slice(0, 5)" :key="t.id"
+                                <div v-for="t in tasks.slice(0,5)" :key="t.id"
                                      :class="['task-item', { done: t.status === 'completed' }]">
-                                    <div :class="['chk', { 'chk-on': t.status === 'completed' }]"
-                                         @click="toggleTask(t)">
+                                    <div :class="['chk', { 'chk-on': t.status === 'completed' }]" @click="toggleTask(t)">
                                         <i v-if="t.status === 'completed'" class="fas fa-check"></i>
                                     </div>
                                     <div class="task-body">
                                         <div class="task-title">@{{ t.title }}</div>
                                         <div class="task-meta">
                                             <span><span :class="['pri', t.priority]"></span>@{{ t.priority }}</span>
-                                            <span v-if="t.due_date">
-                                                <i class="fas fa-calendar-days"></i>@{{ fmtDate(t.due_date) }}
-                                            </span>
+                                            <span v-if="t.due_date"><i class="fas fa-calendar-days"></i>@{{ fmtDate(t.due_date) }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -188,7 +193,7 @@
                                 <p>Add income or expenses</p>
                             </div>
                             <div v-else class="txn-list">
-                                <div v-for="txn in transactions.slice(0, 5)" :key="txn.id" class="txn-item">
+                                <div v-for="txn in transactions.slice(0,5)" :key="txn.id" class="txn-item">
                                     <div :class="['txn-ico', txn.type]">
                                         <i :class="txn.type === 'income' ? 'fas fa-arrow-down' : 'fas fa-arrow-up'"></i>
                                     </div>
@@ -206,10 +211,12 @@
                             </div>
                         </div>
                     </div>
-                </div>
+
+                </div>{{-- /two-col --}}
 
                 {{-- Category Breakdown + Quick Actions --}}
                 <div class="two-col">
+
                     <div class="card">
                         <div class="card-hd">
                             <h3><i class="fas fa-chart-pie"></i> Spending Breakdown</h3>
@@ -229,9 +236,7 @@
                                             <span style="font-family:'DM Mono',monospace">KES @{{ fmt(c.total) }}</span>
                                         </div>
                                         <div class="cat-bar">
-                                            <div class="cat-fill"
-                                                 :style="{ width: catPct(c.total) + '%', background: palette[i % palette.length] }">
-                                            </div>
+                                            <div class="cat-fill" :style="{ width: catPct(c.total) + '%', background: palette[i % palette.length] }"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -263,9 +268,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
 
-            </div>{{-- /dashboard --}}
+                </div>{{-- /two-col --}}
+
+            </div>{{-- /dashboard page --}}
 
             {{-- ════════════════════════════════════════════
                  TASKS PAGE
@@ -281,8 +287,7 @@
                     <div style="display:flex;gap:10px;align-items:center">
                         <div class="search-wrap">
                             <i class="fas fa-search"></i>
-                            <input type="text" class="fc" placeholder="Search tasks…"
-                                   v-model="ts" style="width:210px;">
+                            <input type="text" class="fc" placeholder="Search tasks…" v-model="ts" style="width:210px;">
                         </div>
                         <button class="btn btn-primary" @click="openTaskModal()">
                             <i class="fas fa-plus"></i> New Task
@@ -301,39 +306,30 @@
                         <div v-else class="task-list">
                             <div v-for="t in filteredTasks" :key="t.id"
                                  :class="['task-item', { done: t.status === 'completed' }]">
-                                <div :class="['chk', { 'chk-on': t.status === 'completed' }]"
-                                     @click="toggleTask(t)">
+                                <div :class="['chk', { 'chk-on': t.status === 'completed' }]" @click="toggleTask(t)">
                                     <i v-if="t.status === 'completed'" class="fas fa-check"></i>
                                 </div>
                                 <div class="task-body">
                                     <div class="task-title">@{{ t.title }}</div>
                                     <div class="task-meta">
                                         <span><span :class="['pri', t.priority]"></span>@{{ t.priority }}</span>
-                                        <span v-if="t.due_date">
-                                            <i class="fas fa-calendar-days"></i>@{{ fmtDate(t.due_date) }}
-                                        </span>
-                                        <span v-if="t.category">
-                                            <i class="fas fa-tag"></i>@{{ t.category }}
-                                        </span>
+                                        <span v-if="t.due_date"><i class="fas fa-calendar-days"></i>@{{ fmtDate(t.due_date) }}</span>
+                                        <span v-if="t.category"><i class="fas fa-tag"></i>@{{ t.category }}</span>
                                     </div>
                                 </div>
                                 <div class="task-acts">
                                     <button class="btn-ico ok" @click="toggleTask(t)">
                                         <i :class="t.status === 'pending' ? 'fas fa-check' : 'fas fa-rotate-left'"></i>
                                     </button>
-                                    <button class="btn-ico" @click="editTask(t)">
-                                        <i class="fas fa-pen"></i>
-                                    </button>
-                                    <button class="btn-ico del" @click="delTask(t.id)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <button class="btn-ico" @click="editTask(t)"><i class="fas fa-pen"></i></button>
+                                    <button class="btn-ico del" @click="delTask(t.id)"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-            </div>{{-- /tasks --}}
+            </div>{{-- /tasks page --}}
 
             {{-- ════════════════════════════════════════════
                  FINANCE PAGE
@@ -343,31 +339,19 @@
                 <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
                     <div class="stat">
                         <div class="stat-stripe" style="background:linear-gradient(90deg,var(--green),#34d399)"></div>
-                        <div class="stat-hd">
-                            <div class="stat-ico" style="background:var(--green-bg);color:var(--green)">
-                                <i class="fas fa-arrow-down"></i>
-                            </div>
-                        </div>
+                        <div class="stat-hd"><div class="stat-ico" style="background:var(--green-bg);color:var(--green)"><i class="fas fa-arrow-down"></i></div></div>
                         <div class="stat-val">KES @{{ fmt(summary.income) }}</div>
                         <div class="stat-lbl">Monthly Income</div>
                     </div>
                     <div class="stat">
                         <div class="stat-stripe" style="background:linear-gradient(90deg,var(--red),#f87171)"></div>
-                        <div class="stat-hd">
-                            <div class="stat-ico" style="background:var(--red-bg);color:var(--red)">
-                                <i class="fas fa-arrow-up"></i>
-                            </div>
-                        </div>
+                        <div class="stat-hd"><div class="stat-ico" style="background:var(--red-bg);color:var(--red)"><i class="fas fa-arrow-up"></i></div></div>
                         <div class="stat-val">KES @{{ fmt(summary.expenses) }}</div>
                         <div class="stat-lbl">Monthly Expenses</div>
                     </div>
                     <div class="stat">
                         <div class="stat-stripe" style="background:linear-gradient(90deg,var(--blue),#60a5fa)"></div>
-                        <div class="stat-hd">
-                            <div class="stat-ico" style="background:var(--blue-bg);color:var(--blue)">
-                                <i class="fas fa-piggy-bank"></i>
-                            </div>
-                        </div>
+                        <div class="stat-hd"><div class="stat-ico" style="background:var(--blue-bg);color:var(--blue)"><i class="fas fa-piggy-bank"></i></div></div>
                         <div class="stat-val">KES @{{ fmt(summary.income - summary.expenses) }}</div>
                         <div class="stat-lbl">Net Balance</div>
                     </div>
@@ -380,12 +364,8 @@
                         <button :class="['tab', { on: txf === 'expense' }]" @click="txf = 'expense'">Expenses</button>
                     </div>
                     <div style="display:flex;gap:10px;">
-                        <button class="btn btn-green" @click="openTxnModal('income')">
-                            <i class="fas fa-plus"></i> Income
-                        </button>
-                        <button class="btn btn-red" @click="openTxnModal('expense')">
-                            <i class="fas fa-minus"></i> Expense
-                        </button>
+                        <button class="btn btn-green" @click="openTxnModal('income')"><i class="fas fa-plus"></i> Income</button>
+                        <button class="btn btn-red"   @click="openTxnModal('expense')"><i class="fas fa-minus"></i> Expense</button>
                     </div>
                 </div>
 
@@ -400,9 +380,7 @@
                             </div>
                             <div v-else class="txn-list">
                                 <div v-for="txn in filteredTxns" :key="txn.id" class="txn-item">
-                                    <div :class="['txn-ico', txn.type]">
-                                        <i :class="catIcon(txn.category)"></i>
-                                    </div>
+                                    <div :class="['txn-ico', txn.type]"><i :class="catIcon(txn.category)"></i></div>
                                     <div class="txn-info">
                                         <div class="txn-desc">@{{ txn.description || txn.category }}</div>
                                         <div class="txn-cat">@{{ txn.category }} · @{{ fmtDate(txn.date) }}</div>
@@ -411,9 +389,7 @@
                                         <div :class="['txn-amt', txn.type]">
                                             @{{ txn.type === 'income' ? '+' : '-' }} KES @{{ fmt(txn.amount) }}
                                         </div>
-                                        <button class="btn-ico del" @click="delTxn(txn.id)">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        <button class="btn-ico del" @click="delTxn(txn.id)"><i class="fas fa-trash"></i></button>
                                     </div>
                                 </div>
                             </div>
@@ -440,9 +416,7 @@
                                             </span>
                                         </div>
                                         <div class="cat-bar">
-                                            <div class="cat-fill"
-                                                 :style="{ width: catPct(c.total) + '%', background: palette[i % palette.length] }">
-                                            </div>
+                                            <div class="cat-fill" :style="{ width: catPct(c.total) + '%', background: palette[i % palette.length] }"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -451,7 +425,7 @@
                     </div>
                 </div>
 
-            </div>{{-- /finance --}}
+            </div>{{-- /finance page --}}
 
             {{-- ════════════════════════════════════════════
                  DAILY REPORT PAGE
@@ -459,29 +433,22 @@
             <div v-if="page === 'report'" class="page">
 
                 <div style="margin-bottom:20px;">
-                    <input type="date" class="fc" style="width:190px;"
-                           v-model="rDate" @change="buildReport()">
+                    <input type="date" class="fc" style="width:190px;" v-model="rDate" @change="buildReport()">
                 </div>
 
                 <div class="report-row">
                     <div class="report-card">
-                        <div class="rep-ico" style="background:var(--green-bg);color:var(--green)">
-                            <i class="fas fa-check-double"></i>
-                        </div>
+                        <div class="rep-ico" style="background:var(--green-bg);color:var(--green)"><i class="fas fa-check-double"></i></div>
                         <div class="rep-val">@{{ report.tasksDone }}</div>
                         <div class="rep-lbl">Tasks Completed Today</div>
                     </div>
                     <div class="report-card">
-                        <div class="rep-ico" style="background:var(--red-bg);color:var(--red)">
-                            <i class="fas fa-cart-shopping"></i>
-                        </div>
+                        <div class="rep-ico" style="background:var(--red-bg);color:var(--red)"><i class="fas fa-cart-shopping"></i></div>
                         <div class="rep-val">KES @{{ fmt(report.todayExp) }}</div>
                         <div class="rep-lbl">Money Spent Today</div>
                     </div>
                     <div class="report-card">
-                        <div class="rep-ico" style="background:var(--blue-bg);color:var(--blue)">
-                            <i class="fas fa-wallet"></i>
-                        </div>
+                        <div class="rep-ico" style="background:var(--blue-bg);color:var(--blue)"><i class="fas fa-wallet"></i></div>
                         <div class="rep-val">KES @{{ fmt(report.remaining) }}</div>
                         <div class="rep-lbl">Remaining Budget</div>
                     </div>
@@ -489,9 +456,7 @@
 
                 <div class="two-col">
                     <div class="card">
-                        <div class="card-hd">
-                            <h3><i class="fas fa-clipboard-check"></i> Completed Tasks</h3>
-                        </div>
+                        <div class="card-hd"><h3><i class="fas fa-clipboard-check"></i> Completed Tasks</h3></div>
                         <div class="card-body">
                             <div v-if="!report.doneTasks.length" class="empty">
                                 <i class="fas fa-clipboard-check"></i>
@@ -500,18 +465,14 @@
                             <div v-else class="task-list">
                                 <div v-for="(t, i) in report.doneTasks" :key="i" class="task-item done">
                                     <div class="chk chk-on"><i class="fas fa-check"></i></div>
-                                    <div class="task-body">
-                                        <div class="task-title">@{{ t.title }}</div>
-                                    </div>
+                                    <div class="task-body"><div class="task-title">@{{ t.title }}</div></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="card">
-                        <div class="card-hd">
-                            <h3><i class="fas fa-receipt"></i> Today's Expenses</h3>
-                        </div>
+                        <div class="card-hd"><h3><i class="fas fa-receipt"></i> Today's Expenses</h3></div>
                         <div class="card-body">
                             <div v-if="!report.todayExpList.length" class="empty">
                                 <i class="fas fa-receipt"></i>
@@ -533,9 +494,7 @@
                 </div>
 
                 <div class="card" style="margin-top:20px;">
-                    <div class="card-hd">
-                        <h3><i class="fas fa-terminal"></i> Daily Summary</h3>
-                    </div>
+                    <div class="card-hd"><h3><i class="fas fa-terminal"></i> Daily Summary</h3></div>
                     <div class="card-body">
                         <div class="terminal">
                             <div class="t-head">📊 Daily Report — @{{ rDate }}</div>
@@ -556,7 +515,7 @@
                     </div>
                 </div>
 
-            </div>{{-- /report --}}
+            </div>{{-- /report page --}}
 
             {{-- ════════════════════════════════════════════
                  BUDGET TRACKER PAGE
@@ -566,40 +525,26 @@
                 <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
                     <div class="stat">
                         <div class="stat-stripe" style="background:linear-gradient(90deg,var(--green),#34d399)"></div>
-                        <div class="stat-hd">
-                            <div class="stat-ico" style="background:var(--green-bg);color:var(--green)">
-                                <i class="fas fa-coins"></i>
-                            </div>
-                        </div>
+                        <div class="stat-hd"><div class="stat-ico" style="background:var(--green-bg);color:var(--green)"><i class="fas fa-coins"></i></div></div>
                         <div class="stat-val">KES @{{ fmt(summary.income) }}</div>
                         <div class="stat-lbl">Total Budget (Income)</div>
                     </div>
                     <div class="stat">
                         <div class="stat-stripe" style="background:linear-gradient(90deg,var(--red),#f87171)"></div>
-                        <div class="stat-hd">
-                            <div class="stat-ico" style="background:var(--red-bg);color:var(--red)">
-                                <i class="fas fa-fire"></i>
-                            </div>
-                        </div>
+                        <div class="stat-hd"><div class="stat-ico" style="background:var(--red-bg);color:var(--red)"><i class="fas fa-fire"></i></div></div>
                         <div class="stat-val">KES @{{ fmt(summary.expenses) }}</div>
                         <div class="stat-lbl">Spent So Far</div>
                     </div>
                     <div class="stat">
                         <div class="stat-stripe" style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></div>
-                        <div class="stat-hd">
-                            <div class="stat-ico" style="background:#fff3ed;color:var(--accent)">
-                                <i class="fas fa-shield-halved"></i>
-                            </div>
-                        </div>
+                        <div class="stat-hd"><div class="stat-ico" style="background:#fff3ed;color:var(--accent)"><i class="fas fa-shield-halved"></i></div></div>
                         <div class="stat-val">@{{ budgetPct }}%</div>
                         <div class="stat-lbl">Budget Used</div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-hd">
-                        <h3><i class="fas fa-chart-bar"></i> Budget Progress</h3>
-                    </div>
+                    <div class="card-hd"><h3><i class="fas fa-chart-bar"></i> Budget Progress</h3></div>
                     <div class="card-body">
                         <div class="prog-wrap">
                             <div class="prog-hd">
@@ -608,10 +553,8 @@
                             </div>
                             <div class="prog-track">
                                 <div class="prog-fill" :style="{
-                                    width:  Math.min(budgetPct, 100) + '%',
-                                    background: budgetPct > 90 ? 'var(--red)'
-                                              : budgetPct > 70 ? 'var(--amber)'
-                                              : 'var(--green)'
+                                    width: Math.min(budgetPct, 100) + '%',
+                                    background: budgetPct > 90 ? 'var(--red)' : budgetPct > 70 ? 'var(--amber)' : 'var(--green)'
                                 }"></div>
                             </div>
                             <div class="prog-foot">
@@ -621,9 +564,7 @@
                         </div>
 
                         <div v-if="summary.categories && summary.categories.length">
-                            <h4 style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;">
-                                By Category
-                            </h4>
+                            <h4 style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;">By Category</h4>
                             <div class="cat-list">
                                 <div v-for="(c, i) in summary.categories" :key="i" class="cat-item">
                                     <div class="cat-dot" :style="{ background: palette[i % palette.length] }"></div>
@@ -636,9 +577,7 @@
                                             </span>
                                         </div>
                                         <div class="cat-bar">
-                                            <div class="cat-fill"
-                                                 :style="{ width: catPct(c.total) + '%', background: palette[i % palette.length] }">
-                                            </div>
+                                            <div class="cat-fill" :style="{ width: catPct(c.total) + '%', background: palette[i % palette.length] }"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -652,7 +591,7 @@
                     </div>
                 </div>
 
-            </div>{{-- /budget --}}
+            </div>{{-- /budget page --}}
 
         </main>
     </div>{{-- /shell --}}
@@ -669,13 +608,11 @@
             <div class="modal-bd">
                 <div class="fg">
                     <label>Title *</label>
-                    <input type="text" class="fc" v-model="tForm.title"
-                           placeholder="e.g. Pay rent, Save KES 5,000">
+                    <input type="text" class="fc" v-model="tForm.title" placeholder="e.g. Pay rent, Save KES 5,000">
                 </div>
                 <div class="fg">
                     <label>Description</label>
-                    <textarea class="fc" v-model="tForm.description"
-                              placeholder="Optional details…"></textarea>
+                    <textarea class="fc" v-model="tForm.description" placeholder="Optional details…"></textarea>
                 </div>
                 <div class="two-fg">
                     <div class="fg">
@@ -706,8 +643,7 @@
             <div class="modal-ft">
                 <button class="btn btn-ghost" @click="taskModal = false">Cancel</button>
                 <button class="btn btn-primary" @click="saveTask()" :disabled="!tForm.title">
-                    <i class="fas fa-save"></i>
-                    @{{ editingTask ? 'Update' : 'Create' }}
+                    <i class="fas fa-save"></i> @{{ editingTask ? 'Update' : 'Create' }}
                 </button>
             </div>
         </div>
@@ -728,8 +664,7 @@
             <div class="modal-bd">
                 <div class="fg">
                     <label>Amount (KES) *</label>
-                    <input type="number" class="fc" v-model="txnForm.amount"
-                           placeholder="e.g. 5000" min="1" step="0.01">
+                    <input type="number" class="fc" v-model="txnForm.amount" placeholder="e.g. 5000" min="1" step="0.01">
                 </div>
                 <div class="two-fg">
                     <div class="fg">
@@ -765,8 +700,7 @@
                 </div>
                 <div class="fg" style="margin-bottom:0">
                     <label>Description</label>
-                    <input type="text" class="fc" v-model="txnForm.description"
-                           placeholder="e.g. Lunch at Java House">
+                    <input type="text" class="fc" v-model="txnForm.description" placeholder="e.g. Lunch at Java House">
                 </div>
             </div>
             <div class="modal-ft">
@@ -781,5 +715,5 @@
         </div>
     </div>
 
-</div>{{-- #app --}}
+</div>{{-- /#app --}}
 @endsection
