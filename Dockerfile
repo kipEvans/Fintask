@@ -30,7 +30,8 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-d
 
 # Build assets if package.json exists
 RUN if [ -f package.json ]; then \
-      if [ -f package-lock.json ]; then npm ci; else npm install; fi && npm run prod; \
+      if [ -f package-lock.json ]; then npm ci; else npm install; fi && \
+      if npm run prod 2>/dev/null; then :; else npm run build; fi; \
     fi
 
 # Set permissions
