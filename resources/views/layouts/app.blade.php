@@ -15,7 +15,9 @@
     <meta name="auth-token" content="{{ session('jwt_token', '') }}" />
 
     {{-- Logged-in user name — read by fintask.js for sidebar --}}
-    <meta name="user-name"  content="{{ auth()->user()->name ?? session('user_name', 'User') }}" />
+    <meta name="user-name" content="{{ 
+    rescue(fn() => auth()->user()?->name, 'Guest') 
+}}" />
 
     <title>FinTask – @yield('title', 'Finance & Task Manager')</title>
 
