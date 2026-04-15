@@ -63,8 +63,12 @@ EOF
 
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Expose HTTP
 EXPOSE 80
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Start with entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
