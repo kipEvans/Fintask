@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env.example
+.editorconfig
+README.md
+docker-compose.yml
+node_modules
+npm-debug.log
+yarn-error.log
+.DS_Store
+.vscode
+.idea
+storage/logs/*
+storage/framework/cache/*
+tests/
+.phpunit.result.cache
