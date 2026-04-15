@@ -3,6 +3,7 @@ services:
     name: fintask
     runtime: docker
     dockerfilePath: ./Dockerfile
+    buildCommand: ""
     envVars:
       - key: APP_ENV
         value: production
