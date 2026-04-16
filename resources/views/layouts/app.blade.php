@@ -30,7 +30,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     {{-- ── FINTASK CSS ── --}}
-    <link rel="stylesheet" href="{{ asset('css/fintask.css') }}?v={{ filemtime(public_path('css/fintask.css')) ?? time() }}" />
+    <link rel="stylesheet" href="/css/fintask.css?v=1" />
+
+    <style>
+        /* Test inline style to verify CSS loading works */
+        body { position: relative; }
+    </style>
 
     @stack('styles')
 </head>
@@ -42,7 +47,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
 
     {{-- ── FINTASK JS ── --}}
-    <script src="{{ asset('js/fintask.js') }}?v={{ filemtime(public_path('js/fintask.js')) ?? time() }}"></script>
+    <script src="/js/fintask.js?v=1"></script>
 
     @stack('scripts')
 </body>

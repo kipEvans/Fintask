@@ -49,8 +49,8 @@ RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
     DocumentRoot /var/www/html/public
 
     <Directory /var/www/html/public>
-        Options Indexes FollowSymLinks
-        AllowOverride None
+        Options -MultiViews -Indexes FollowSymLinks
+        AllowOverride All
         Require all granted
 
         RewriteEngine On
