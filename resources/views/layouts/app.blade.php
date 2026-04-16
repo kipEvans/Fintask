@@ -29,8 +29,8 @@
     {{-- ── FONT AWESOME ── --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-    {{-- ── FINTASK CSS ── --}}
-    <link rel="stylesheet" href="{{ asset('css/fintask.css') }}" />
+    {{-- ── VITE CSS & JS ── --}}
+    @vite(['resources/css/app.css', 'resources/css/fintask.css', 'resources/js/fintask.js'])
 
     @stack('styles')
 </head>
@@ -40,9 +40,6 @@
 
     {{-- ── VUE 3 (must load before fintask.js) ── --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
-
-    {{-- ── FINTASK JS ── --}}
-    <script src="{{ asset('js/fintask.js') }}"></script>
 
     @stack('scripts')
 </body>
