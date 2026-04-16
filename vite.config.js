@@ -20,4 +20,20 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
+    build: {
+        outDir: 'public',
+        emptyOutDir: false,
+        rollupOptions: {
+            output: {
+                entryFileNames: 'js/[name].js',
+                chunkFileNames: 'js/[name]-[hash].js',
+                assetFileNames: ({ name }) => {
+                    if (/\.css$/.test(name ?? '')) {
+                        return 'css/[name][extname]';
+                    }
+                    return 'assets/[name]-[hash][extname]';
+                },
+            },
+        },
+    },
 });
