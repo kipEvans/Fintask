@@ -26,13 +26,13 @@ COPY . /var/www/html
 RUN mkdir -p storage bootstrap/cache
 
 # Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev --no-scripts
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
-# Build assets if package.json exists
-RUN if [ -f package.json ]; then \
-      if [ -f package-lock.json ]; then npm ci; else npm install; fi && \
-      if npm run prod 2>/dev/null; then :; else npm run build; fi; \
-    fi
+# Build assets with npm
+RUN npm ci && npm run build
+
+# Create necessary directories with proper structure
+RUN mkdir -p /var/www/html/storage/logs /var/www/html/storage/framework/cache /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
