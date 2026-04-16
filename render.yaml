@@ -3,6 +3,7 @@ services:
     name: fintask
     runtime: docker
     plan: standard
+    maxShutdownDelaySeconds: 30
     envVars:
       - key: APP_ENV
         value: production
@@ -52,3 +53,5 @@ services:
     name: fintask-mysql
     ipAllowList: []
     plan: free
+    databaseName: laravel
+    databaseUser: laravel
