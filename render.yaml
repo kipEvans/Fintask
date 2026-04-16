@@ -1,16 +1,19 @@
 services:
-  - type: mysql
-    name: fintask-mysql
+  - type: pgsql
+    name: fintask-postgres
     ipAllowList: []
     plan: free
-    databaseName: laravel
-    databaseUser: laravel
+    databaseName: fintask
+    databaseUser: fintask
 
   - type: web
     name: fintask
     runtime: docker
     plan: standard
     maxShutdownDelaySeconds: 30
+    depends:
+      - name: fintask-postgres
+        type: pgsql
     envVars:
       - key: APP_ENV
         value: production
@@ -28,17 +31,17 @@ services:
         value: array
       - key: QUEUE_CONNECTION
         value: sync
-      # Database variables - will be injected by Render
+      # Database connection
       - key: DB_CONNECTION
-        value: mysql
+        value: pgsql
       # IMPORTANT: Set these manually in Render dashboard after deployment
       # - key: DB_HOST
-      #   value: YOUR_MYSQL_HOST_HERE
+      #   value: YOUR_POSTGRES_HOST_HERE
       # - key: DB_PORT
-      #   value: "3306"
+      #   value: "5432"
       # - key: DB_DATABASE
-      #   value: laravel
+      #   value: fintask
       # - key: DB_USERNAME
-      #   value: laravel
+      #   value: fintask
       # - key: DB_PASSWORD
       #   value: YOUR_PASSWORD_HERE

@@ -59,7 +59,7 @@ Before deployment starts, add these environment variables:
 | `SESSION_DRIVER` | `cookie` |
 | `CACHE_STORE` | `array` |
 | `QUEUE_CONNECTION` | `sync` |
-| `DB_CONNECTION` | `mysql` |
+| `DB_CONNECTION` | `pgsql` |
 
 3. Click "Create Web Service"
 
@@ -73,30 +73,30 @@ The web service will start building. This may take 5-10 minutes. Check the deplo
 - Migration messages (may skip if database not connected yet)
 - Apache starting
 
-### Step 6: Create MySQL Database
+### Step 6: Create PostgreSQL Database
 
 After the web service is created:
 
 1. Go back to [Render Dashboard](https://dashboard.render.com)
 2. Click "New +"
-3. Click "MySQL"
-4. **Name:** `fintask-mysql`
-5. **Database Name:** `laravel`
-6. **Database User:** `laravel`
+3. Click "PostgreSQL"
+4. **Name:** `fintask-postgres`
+5. **Database Name:** `fintask`
+6. **User:** `fintask`
 7. **Region:** Same as your web service
 8. **Plan:** `Free`
 9. Click "Create Database"
 
 Wait 3-5 minutes for the database to initialize and show connection details.
 
-### Step 7: Get MySQL Connection Details
+### Step 7: Get PostgreSQL Connection Details
 
-1. Click on your MySQL service (`fintask-mysql`)
-2. In the "Connections" section, find:
-   - **Host** (e.g., `mysql-xxxxx.render.com`)
-   - **Port** (usually `3306`)
-   - **Database:** `laravel`
-   - **User:** `laravel`
+1. Click on your PostgreSQL service (`fintask-postgres`)
+2. In the "Connections" section, copy:
+   - **Host** (e.g., `dpg-xxxxx.render.com`)
+   - **Port** (usually `5432`)
+   - **Database:** `fintask`
+   - **User:** `fintask`
    - **Password** (auto-generated)
 
 ### Step 8: Add Database Environment Variables to Web Service
@@ -107,10 +107,11 @@ Wait 3-5 minutes for the database to initialize and show connection details.
 
 | Key | Value | Example |
 |-----|-------|---------|
-| `DB_HOST` | MySQL Host from connections | `mysql-xxxxx.render.com` |
-| `DB_PORT` | `3306` | `3306` |
-| `DB_DATABASE` | `laravel` | `laravel` |
-| `DB_USERNAME` | `laravel` | `laravel` |
+| `DB_CONNECTION` | `pgsql` | `pgsql` |
+| `DB_HOST` | PostgreSQL Host from connections | `dpg-xxxxx.render.com` |
+| `DB_PORT` | `5432` | `5432` |
+| `DB_DATABASE` | `fintask` | `fintask` |
+| `DB_USERNAME` | `fintask` | `fintask` |
 | `DB_PASSWORD` | Password from connections | (auto-generated string) |
 
 4. Click "Save Changes"
@@ -161,17 +162,17 @@ Test login with:
 **Steps to debug:**
 
 1. Go to Web Service → "Logs"
-2. Look for "Database Configuration:" section in logs
+2. Look for "Database (PostgreSQL):" section in logs
 3. Check if `DB_HOST` shows:
-   - Your MySQL host (e.g., `mysql-xxxxx.render.com`) → Database is properly connected
+   - Your PostgreSQL host (e.g., `dpg-xxxxx.render.com`) → Database is properly connected
    - `127.0.0.1` → Environment variables not being read
 4. Go to "Environment" tab and verify all database variables are set correctly
 5. Redeploy by clicking "Manual Deploy" → "Deploy latest commit"
 
-### Issue: MySQL Service Shows as "Suspended"
+### Issue: PostgreSQL Service Shows as "Suspended"
 
 **Solution:**
-- Free MySQL tier suspends after 90 days of inactivity
+- Free PostgreSQL tier suspends after 90 days of inactivity
 - Upgrade to a paid plan or create a new free database
 - Update your Web Service environment variables with new credentials
 
@@ -199,7 +200,7 @@ Your GitHub Repository
          │    ├─ Runs your Laravel application
          │    ├─ Serves CSS and JavaScript assets
          │    └─ Handles HTTP requests
-         └─→ MySQL Service (Database)
+         └─→ PostgreSQL Service (Database)
               ├─ Stores users, tasks, transactions
               └─ Backup automatically included
 ```

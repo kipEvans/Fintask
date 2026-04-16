@@ -16,11 +16,11 @@ LOG_CHANNEL=${LOG_CHANNEL:-stack}
 LOG_STACK=${LOG_STACK:-stderr}
 LOG_LEVEL=${LOG_LEVEL:-info}
 
-DB_CONNECTION=${DB_CONNECTION:-mysql}
+DB_CONNECTION=${DB_CONNECTION:-pgsql}
 DB_HOST=${DB_HOST:-127.0.0.1}
-DB_PORT=${DB_PORT:-3306}
-DB_DATABASE=${DB_DATABASE:-laravel}
-DB_USERNAME=${DB_USERNAME:-root}
+DB_PORT=${DB_PORT:-5432}
+DB_DATABASE=${DB_DATABASE:-fintask}
+DB_USERNAME=${DB_USERNAME:-postgres}
 DB_PASSWORD=${DB_PASSWORD:-}
 
 SESSION_DRIVER=${SESSION_DRIVER:-cookie}
@@ -36,11 +36,11 @@ chmod 644 /var/www/html/.env
 # Print configuration for debugging
 echo ""
 echo "=== Configuration ==="
-echo "Database:"
+echo "Database (PostgreSQL):"
 echo "  Host: ${DB_HOST:-127.0.0.1}"
-echo "  Port: ${DB_PORT:-3306}"
-echo "  Database: ${DB_DATABASE:-laravel}"
-echo "  User: ${DB_USERNAME:-root}"
+echo "  Port: ${DB_PORT:-5432}"
+echo "  Database: ${DB_DATABASE:-fintask}"
+echo "  User: ${DB_USERNAME:-postgres}"
 echo "Logging: ${LOG_STACK:-stderr}"
 echo "Cache: ${CACHE_STORE:-array}"
 echo "====================="

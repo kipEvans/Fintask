@@ -15,7 +15,7 @@ A modern web application built with Laravel and Vue.js for managing personal fin
 
 - **Backend**: Laravel 13.2.0 (PHP 8.4)
 - **Frontend**: Vue 3.4.21 with Tailwind CSS 4.0.0
-- **Database**: MySQL
+- **Database**: PostgreSQL
 - **Build**: Vite 8.0.0 for asset bundling
 - **Deployment**: Docker on Render
 
@@ -43,8 +43,9 @@ A modern web application built with Laravel and Vue.js for managing personal fin
 
 4. **Setup database**
    ```bash
-   # Create MySQL database
-   mysql -u root -p -e "CREATE DATABASE laravel;"
+   # Create PostgreSQL database (if on local PostgreSQL server)
+   createdb fintask
+   createuser fintask
    
    # Run migrations
    php artisan migrate
@@ -153,8 +154,9 @@ php artisan test tests/Feature/TaskApiTest.php
 - Check that `public/css/` and `public/js/` directories exist with files
 
 ### Database Connection Error
-- Verify MySQL is running locally
-- Check `.env` file has correct credentials
+- Verify PostgreSQL is running locally
+- Check `.env` file has correct PostgreSQL credentials
+- Verify `DB_CONNECTION=pgsql` in .env
 - Run migrations: `php artisan migrate`
 - For Render deployment, see Troubleshooting in [DEPLOYMENT.md](DEPLOYMENT.md)
 
@@ -172,11 +174,11 @@ APP_ENV=production
 APP_DEBUG=false
 APP_KEY=<base64-encoded-key>
 
-DB_CONNECTION=mysql
+DB_CONNECTION=pgsql
 DB_HOST=localhost
-DB_PORT=3306
-DB_DATABASE=laravel
-DB_USERNAME=laravel
+DB_PORT=5432
+DB_DATABASE=fintask
+DB_USERNAME=fintask
 DB_PASSWORD=<password>
 
 LOG_STACK=stderr
