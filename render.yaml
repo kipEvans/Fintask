@@ -11,9 +11,6 @@ services:
     runtime: docker
     plan: standard
     maxShutdownDelaySeconds: 30
-    depends:
-      - name: fintask-mysql
-        type: mysql
     envVars:
       - key: APP_ENV
         value: production
@@ -25,36 +22,23 @@ services:
         value: stack
       - key: LOG_STACK
         value: stderr
-      - key: DB_CONNECTION
-        value: mysql
-      - key: DB_HOST
-        fromService:
-          name: fintask-mysql
-          type: mysql
-          property: host
-      - key: DB_PORT
-        fromService:
-          name: fintask-mysql
-          type: mysql
-          property: port
-      - key: DB_DATABASE
-        fromService:
-          name: fintask-mysql
-          type: mysql
-          property: database
-      - key: DB_USERNAME
-        fromService:
-          name: fintask-mysql
-          type: mysql
-          property: username
-      - key: DB_PASSWORD
-        fromService:
-          name: fintask-mysql
-          type: mysql
-          property: password
       - key: SESSION_DRIVER
         value: cookie
       - key: CACHE_STORE
         value: array
       - key: QUEUE_CONNECTION
         value: sync
+      # Database variables - will be injected by Render
+      - key: DB_CONNECTION
+        value: mysql
+      # IMPORTANT: Set these manually in Render dashboard after deployment
+      # - key: DB_HOST
+      #   value: YOUR_MYSQL_HOST_HERE
+      # - key: DB_PORT
+      #   value: "3306"
+      # - key: DB_DATABASE
+      #   value: laravel
+      # - key: DB_USERNAME
+      #   value: laravel
+      # - key: DB_PASSWORD
+      #   value: YOUR_PASSWORD_HERE

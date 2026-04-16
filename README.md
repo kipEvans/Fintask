@@ -1,3 +1,199 @@
+# FinTask - Personal Finance & Task Management Application
+
+A modern web application built with Laravel and Vue.js for managing personal finances and tasks.
+
+## Features
+
+- **Dashboard** - Overview of financial summary, recent tasks, and budget status
+- **Task Management** - Create, update, and track personal tasks with priority levels
+- **Finance Tracking** - Record and categorize financial transactions
+- **Budget Planning** - Set and monitor budgetary goals
+- **Reports** - Detailed financial reports and analytics
+- **Authentication** - Secure login and registration system
+
+## Technology Stack
+
+- **Backend**: Laravel 13.2.0 (PHP 8.4)
+- **Frontend**: Vue 3.4.21 with Tailwind CSS 4.0.0
+- **Database**: MySQL
+- **Build**: Vite 8.0.0 for asset bundling
+- **Deployment**: Docker on Render
+
+## Quick Start
+
+### Local Development
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd fintask
+   ```
+
+2. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Setup database**
+   ```bash
+   # Create MySQL database
+   mysql -u root -p -e "CREATE DATABASE laravel;"
+   
+   # Run migrations
+   php artisan migrate
+   
+   # Seed with test data (optional)
+   php artisan db:seed
+   ```
+
+5. **Build assets**
+   ```bash
+   npm run build
+   ```
+
+6. **Start development server**
+   ```bash
+   php artisan serve
+   ```
+
+   Visit `http://localhost:8000` in your browser.
+
+### Deployment
+
+For deploying to Render (or other platforms), see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+**Quick summary:**
+1. Push code to GitHub
+2. Create services on Render dashboard (Web + MySQL)
+3. Set environment variables for database connection
+4. Redeploy to activate database credentials
+
+## Database
+
+The application uses MySQL with three main tables:
+
+- **users** - User accounts and authentication
+- **tasks** - Personal to-do items
+- **transactions** - Financial transaction records
+
+Run migrations to create tables:
+```bash
+php artisan migrate
+```
+
+### Test Credentials
+
+After seeding the database:
+- **Email**: `user@example.com`
+- **Password**: `password`
+
+## Project Structure
+
+```
+fintask/
+├── app/                  # Laravel application code
+│   ├── Http/            # Controllers, middleware, requests
+│   ├── Models/          # Eloquent models (User, Task, Transaction)
+│   └── Services/        # Business logic (FinanceService, TaskService)
+├── resources/           # Frontend assets
+│   ├── css/            # Stylesheets (fintask.css)
+│   ├── js/             # Vue components and scripts (fintask.js)
+│   └── views/          # Blade templates
+├── routes/             # API and web routes
+├── database/           # Migrations, factories, seeders
+├── public/             # Web-accessible files
+├── tests/              # Unit and feature tests
+├── Dockerfile          # Docker image definition
+└── render.yaml         # Render infrastructure config
+```
+
+## API Endpoints
+
+Authentication:
+- `POST /api/register` - Register new user
+- `POST /api/login` - User login
+- `POST /api/logout` - User logout
+- `GET /api/user` - Get authenticated user
+
+Tasks:
+- `GET /api/tasks` - List user's tasks
+- `POST /api/tasks` - Create new task
+- `PUT /api/tasks/{id}` - Update task
+- `DELETE /api/tasks/{id}` - Delete task
+
+Finance:
+- `GET /api/transactions` - List transactions
+- `POST /api/transactions` - Create transaction
+- `GET /api/reports/summary` - Financial summary
+
+## Testing
+
+Run the test suite:
+```bash
+php artisan test
+```
+
+Run specific test file:
+```bash
+php artisan test tests/Feature/TaskApiTest.php
+```
+
+## Troubleshooting
+
+### CSS/JS Not Styling
+- Clear browser cache (Ctrl+Shift+R or Cmd+Shift+R)
+- Hard refresh with `?v=2` query parameter
+- Check that `public/css/` and `public/js/` directories exist with files
+
+### Database Connection Error
+- Verify MySQL is running locally
+- Check `.env` file has correct credentials
+- Run migrations: `php artisan migrate`
+- For Render deployment, see Troubleshooting in [DEPLOYMENT.md](DEPLOYMENT.md)
+
+### Port Already in Use
+```bash
+# Use different port
+php artisan serve --port=8001
+```
+
+## Environment Variables
+
+Required for production:
+```
+APP_ENV=production
+APP_DEBUG=false
+APP_KEY=<base64-encoded-key>
+
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=laravel
+DB_PASSWORD=<password>
+
+LOG_STACK=stderr
+SESSION_DRIVER=cookie
+CACHE_STORE=array
+```
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Support
+
+For issues or questions:
+1. Check [DEPLOYMENT.md](DEPLOYMENT.md) for deployment-related help
+2. Review Laravel documentation: https://laravel.com/docs
+3. Check test files for usage examples
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
