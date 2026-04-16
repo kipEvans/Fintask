@@ -19,17 +19,11 @@ COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 # Set workdir
 WORKDIR /var/www/html
 
-# Set environment for production (MySQL)
+# Set environment for production
 ENV APP_ENV=production
 ENV APP_DEBUG=false
 ENV LOG_CHANNEL=stack
 ENV LOG_STACK=stderr
-ENV DB_CONNECTION=mysql
-ENV DB_HOST=127.0.0.1
-ENV DB_PORT=3306
-ENV DB_DATABASE=fintask
-ENV DB_USERNAME=root
-ENV DB_PASSWORD=
 ENV SESSION_DRIVER=cookie
 ENV CACHE_STORE=array
 ENV QUEUE_CONNECTION=sync

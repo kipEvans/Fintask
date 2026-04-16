@@ -18,27 +18,27 @@ services:
         value: mysql
       - key: DB_HOST
         fromService:
-          name: fintask-db
+          name: fintask-mysql
           type: mysql
           property: host
       - key: DB_PORT
         fromService:
-          name: fintask-db
+          name: fintask-mysql
           type: mysql
           property: port
       - key: DB_DATABASE
         fromService:
-          name: fintask-db
+          name: fintask-mysql
           type: mysql
           property: database
       - key: DB_USERNAME
         fromService:
-          name: fintask-db
+          name: fintask-mysql
           type: mysql
           property: username
       - key: DB_PASSWORD
         fromService:
-          name: fintask-db
+          name: fintask-mysql
           type: mysql
           property: password
       - key: SESSION_DRIVER
@@ -49,7 +49,6 @@ services:
         value: sync
 
   - type: mysql
-    name: fintask-db
+    name: fintask-mysql
+    ipAllowList: []
     plan: free
-    initialDatabase: fintask
-    userPassword: ${DB_PASSWORD}
