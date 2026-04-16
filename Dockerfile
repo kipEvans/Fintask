@@ -29,7 +29,7 @@ RUN mkdir -p storage bootstrap/cache
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
 # Build assets with npm
-RUN npm ci && npm run build
+RUN npm install && npm run build
 
 # Create necessary directories with proper structure
 RUN mkdir -p /var/www/html/storage/logs /var/www/html/storage/framework/cache /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views
