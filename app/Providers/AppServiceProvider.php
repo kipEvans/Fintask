@@ -19,9 +19,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Force HTTPS in production (Render uses HTTPS)
-        if (env('APP_ENV') === 'production') {
-            \URL::forceScheme('https');
+        // Set app URL from environment (important for form actions and redirects)
+        // In production, this should be https://fintask.onrender.com
+        if (env('APP_URL')) {
+            \URL::forceRootUrl(env('APP_URL'));
+            
+            // If APP_URL starts with https, force the scheme
+            if (str_starts_with(env('APP_URL'), 'https')) {
+                \URL::forceScheme('https');
+            }
         }
     }
 }
