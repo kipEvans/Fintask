@@ -35,10 +35,6 @@ RUN mkdir -p /var/www/html/public/css /var/www/html/public/js
 COPY resources/css/fintask.css /var/www/html/public/css/fintask.css
 COPY resources/js/fintask.js /var/www/html/public/js/fintask.js
 
-# Copy app.css and app.js if they exist
-COPY resources/css/app.css /var/www/html/public/css/app.css 2>/dev/null || true
-COPY resources/js/app.js /var/www/html/public/js/app.js 2>/dev/null || true
-
 # Create necessary directories with proper structure
 RUN mkdir -p /var/www/html/storage/logs /var/www/html/storage/framework/cache /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views
 
