@@ -28,15 +28,23 @@ RUN mkdir -p storage bootstrap/cache
 # Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
-# Build assets with npm
-RUN npm install && npm run build
+# Ensure public asset directories exist
+RUN mkdir -p /var/www/html/public/css /var/www/html/public/js
+
+# Copy source assets directly to public (bypass npm build complexity)
+COPY resources/css/fintask.css /var/www/html/public/css/fintask.css
+COPY resources/js/fintask.js /var/www/html/public/js/fintask.js
+
+# Copy app.css and app.js if they exist
+COPY resources/css/app.css /var/www/html/public/css/app.css 2>/dev/null || true
+COPY resources/js/app.js /var/www/html/public/js/app.js 2>/dev/null || true
 
 # Create necessary directories with proper structure
 RUN mkdir -p /var/www/html/storage/logs /var/www/html/storage/framework/cache /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/css /var/www/html/public/js
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/css /var/www/html/public/js
 
 # Set Apache document root to public with explicit rewrite and override
 RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
