@@ -1,9 +1,19 @@
 services:
+  - type: mysql
+    name: fintask-mysql
+    ipAllowList: []
+    plan: free
+    databaseName: laravel
+    databaseUser: laravel
+
   - type: web
     name: fintask
     runtime: docker
     plan: standard
     maxShutdownDelaySeconds: 30
+    depends:
+      - name: fintask-mysql
+        type: mysql
     envVars:
       - key: APP_ENV
         value: production
@@ -48,10 +58,3 @@ services:
         value: array
       - key: QUEUE_CONNECTION
         value: sync
-
-  - type: mysql
-    name: fintask-mysql
-    ipAllowList: []
-    plan: free
-    databaseName: laravel
-    databaseUser: laravel
