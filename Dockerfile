@@ -25,6 +25,9 @@ COPY . /var/www/html
 # Ensure storage and cache directories exist
 RUN mkdir -p storage bootstrap/cache
 
+# Create SQLite database file if it doesn't exist
+RUN touch /var/www/html/database.sqlite && chmod 666 /var/www/html/database.sqlite
+
 # Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
@@ -49,7 +52,7 @@ RUN cat > /etc/apache2/sites-available/000-default.conf <<'EOF'
     DocumentRoot /var/www/html/public
 
     <Directory /var/www/html/public>
-        Options -MultiViews -Indexes FollowSymLinks
+        Options FollowSymLinks
         AllowOverride All
         Require all granted
 
