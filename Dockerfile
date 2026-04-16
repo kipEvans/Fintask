@@ -19,14 +19,26 @@ COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 # Set workdir
 WORKDIR /var/www/html
 
+# Set environment for production (MySQL)
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+ENV LOG_CHANNEL=stack
+ENV LOG_STACK=stderr
+ENV DB_CONNECTION=mysql
+ENV DB_HOST=127.0.0.1
+ENV DB_PORT=3306
+ENV DB_DATABASE=fintask
+ENV DB_USERNAME=root
+ENV DB_PASSWORD=
+ENV SESSION_DRIVER=cookie
+ENV CACHE_STORE=array
+ENV QUEUE_CONNECTION=sync
+
 # Copy source
 COPY . /var/www/html
 
 # Ensure storage and cache directories exist
 RUN mkdir -p storage bootstrap/cache
-
-# Create SQLite database file if it doesn't exist
-RUN touch /var/www/html/database.sqlite && chmod 666 /var/www/html/database.sqlite
 
 # Install PHP dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
@@ -40,6 +52,9 @@ COPY resources/js/fintask.js /var/www/html/public/js/fintask.js
 
 # Create necessary directories with proper structure
 RUN mkdir -p /var/www/html/storage/logs /var/www/html/storage/framework/cache /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views
+
+# Create and set permissions on log file
+RUN touch /var/www/html/storage/logs/laravel.log && chmod 666 /var/www/html/storage/logs/laravel.log
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public/css /var/www/html/public/js

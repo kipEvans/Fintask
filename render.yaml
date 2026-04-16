@@ -11,8 +11,45 @@ services:
       - key: APP_KEY
         generateValue: true
       - key: LOG_CHANNEL
+        value: stack
+      - key: LOG_STACK
         value: stderr
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        fromService:
+          name: fintask-db
+          type: mysql
+          property: host
+      - key: DB_PORT
+        fromService:
+          name: fintask-db
+          type: mysql
+          property: port
+      - key: DB_DATABASE
+        fromService:
+          name: fintask-db
+          type: mysql
+          property: database
+      - key: DB_USERNAME
+        fromService:
+          name: fintask-db
+          type: mysql
+          property: username
+      - key: DB_PASSWORD
+        fromService:
+          name: fintask-db
+          type: mysql
+          property: password
       - key: SESSION_DRIVER
         value: cookie
-      - key: CACHE_DRIVER
+      - key: CACHE_STORE
         value: array
+      - key: QUEUE_CONNECTION
+        value: sync
+
+  - type: mysql
+    name: fintask-db
+    plan: free
+    initialDatabase: fintask
+    userPassword: ${DB_PASSWORD}
